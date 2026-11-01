@@ -1,0 +1,10 @@
+import {notFound} from 'next/navigation'
+import {Workspace} from '@/components/workspace'
+import {Overview} from '@/components/overview'
+import {RecordsPage,EventsPage} from '@/components/records'
+import {Integrations,WhatsAppPage,AnalyticsPage,Customers,Billing,Team,Developers,SettingsPage} from '@/components/sections'
+import {Marketing} from '@/components/marketing'
+import {AuthScreen,Onboarding} from '@/components/onboarding'
+import {Operator} from '@/components/operator'
+import {RequireAuth} from '@/lib/auth'
+export default async function Page({params}:{params:Promise<{path:string[]}>}){const {path}=await params;const [root,section]=path;if(path.length>2)notFound();if(['home','features','how-it-works','pricing','developers','contact'].includes(root)&&!section)return <Marketing page={root}/>;if(['login','register','forgot-password','reset-password','verify-email','accept-invitation'].includes(root)&&!section)return <AuthScreen mode={root}/>;if(root==='onboarding'&&!section)return <RequireAuth><Onboarding/></RequireAuth>;if(root==='admin'){if(section&&!['tenants','subscriptions','api-usage','whatsapp','integrations','payments','orders','support','health','audit','settings'].includes(section))notFound();return <RequireAuth operator><Workspace admin><Operator page={section}/></Workspace></RequireAuth>};if(root!=='dashboard')notFound();const pages:Record<string,React.ReactNode>={overview:<Overview/>,events:<EventsPage/>,orders:<RecordsPage kind="orders"/>,tickets:<RecordsPage kind="tickets"/>,payments:<RecordsPage kind="payments"/>,customers:<Customers/>,whatsapp:<WhatsAppPage/>,integrations:<Integrations/>,analytics:<AnalyticsPage/>,developers:<Developers/>,billing:<Billing/>,team:<Team/>,settings:<SettingsPage/>,support:<SettingsPage support/>};const content=pages[section||'overview'];if(!content)notFound();return <RequireAuth><Workspace>{content}</Workspace></RequireAuth>}
