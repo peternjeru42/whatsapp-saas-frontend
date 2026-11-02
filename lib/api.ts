@@ -84,8 +84,8 @@ export function loginAccount(email: string, password: string) {
   return authMutation('login', {email, password}) as Promise<AuthUser>
 }
 
-export function registerAccount(companyName: string, email: string, password: string) {
-  return authMutation('register', {company_name: companyName, email, password}) as Promise<AuthUser>
+export function registerAccount(email: string, password: string, passwordConfirm: string) {
+  return authMutation('register', {email, password, password_confirm: passwordConfirm}) as Promise<AuthUser>
 }
 
 export async function logoutAccount() {
